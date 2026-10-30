@@ -14,7 +14,7 @@ BODEN     = 2.0      # Bodenstaerke
 DECKEL    = 2.0      # Deckelstaerke
 SPALT     = 0.5      # Luft Platine <-> Innenwand
 UNTEN     = 3.0      # Platz unter der Platine (Loetstellen)
-INNEN_H   = 11.0     # Platz ueber der Platine (hoechstes Teil: J1 8,5 mm / ULN im Sockel ca. 8 mm)
+INNEN_H   = 11.0     # Platz ueber der Platine (hoechstes Teil: J1 8,5 mm / Treiber U2 im Sockel ca. 8 mm)
 ESP_Z     = 2.5      # Unterkante S3-Zero ueber Platine (Annahme: direkt auf Stiftleiste geloetet, Kunststoff 2,5 mm)
 ESP_T     = 1.2      # Dicke S3-Zero-Platine
 LEISTE    = 1.2      # Auflagerand unter der Platine (ringsum, keine Pads in diesem Streifen)
@@ -97,7 +97,7 @@ def unterteil():
     ring = box(IX0, IY0, BODEN - 0.1, IX1, IY1, Z_PCB).cut(
         box(LEISTE, LEISTE, 0, PCB_W - LEISTE, PCB_H - LEISTE, Z_PCB + 1))
     b = b.union(ring)
-    # Mittelstuetze unter der Platine (Stelle ohne Pads, zwischen ULN und Widerstaenden)
+    # Mittelstuetze unter der Platine (Stelle ohne Pads, zwischen Treiber U2 und Widerstaenden)
     for x, y in [(167.2, 71.5), (142.0, 52.0)]:
         b = b.union(box(kx(x) - 1.2, ky(y) - 1.2, BODEN - 0.1, kx(x) + 1.2, ky(y) + 1.2, Z_PCB))
     for name, w, a, c, z0, z1 in OEFFNUNGEN:
@@ -143,7 +143,7 @@ def deckel():
     d = d.cut(rbox(kx(ESP[0] - 0.5), ky(ESP[3] + 0.5), -1, kx(ESP[2] + 0.5), ky(ESP[1] - 0.5), DECKEL + 1, 1.5))
     # Ausschnitt ueber J1 (Ausgaenge, Stiftleiste 2x8, Stecker von oben)
     d = d.cut(rbox(kx(J1[0] - 0.4), ky(J1[3] + 0.4), -1, kx(J1[2] + 0.4), ky(J1[1] - 0.4), DECKEL + 1, 1.0))
-    # Lueftungsschlitze ueber dem ULN2803A
+    # Lueftungsschlitze ueber dem Treiber U2
     for i in range(4):
         x = kx(156.3) + i * 2.6
         d = d.cut(rbox(x, ky(81.0), -1, x + 1.4, ky(62.0), DECKEL + 1, 0.6))
