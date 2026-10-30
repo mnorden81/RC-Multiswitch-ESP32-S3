@@ -13,7 +13,7 @@ Dokumente:
 - [docs/Firmware-Spezifikation.md](docs/Firmware-Spezifikation.md) (auch als DOCX): Firmware-Spezifikation (Basis V3, Router fuer Modulketten, BOOT-Taster, Status-LED)
 
 ## Merkmale
-- 8 Schaltkanaele ueber ULN2803A, Kontroll-LED je Kanal
+- 8 Schaltkanaele ueber TBD62083APG (negativ) oder TBD62783APG (positiv), Kontroll-LED je Kanal
 - UART A (Eingang), UART B und UART C mit waehlbarer Rolle: Modulkette (CRSF), S.Port-LiPo-Sensoren, GPS oder Raw, je mit eigener Baudrate
 - Versorgung des ESP32 aus +5 V des Empfaengers, Last getrennt mit 5-12 V
 - Eigener THT-Footprint fuer den S3-Zero (nur 2x9 Header)
@@ -22,8 +22,8 @@ Dokumente:
 Board: Waveshare ESP32-S3-Zero
 
 - Lastspannung 5-12 V (VLOAD) an CN2 (JST PH 2), TVS-Diode P6KE18A als Schutz.
-- Treiber ULN2803A, 8 Kanaele, max. 500 mA je Kanal (Verlustleistung des ULN2803A bei mehreren Kanaelen beachten).
-- R9-R16 (THT 1/4 W) zwischen ULN-Ausgang und Stiftleiste J1: kein Wert vorgegeben, der Anwender legt sie passend zu Verbraucher und Lastspannung aus.
+- Treiber TBD62083APG (DMOS, Nachfolger des ULN2803A, gleiche Pinbelegung; ein ULN2803A passt weiterhin in den Sockel), 8 Kanaele, max. 500 mA je Kanal, Summe aller Kanaele ca. 1,5 A. Spannungsabfall am Ausgang nur ca. 0,2-0,4 V statt ca. 1 V beim ULN2803A. Positiv schaltende Variante mit TBD62783APG siehe [hardware/README-hardware.md](hardware/README-hardware.md).
+- R9-R16 (THT 1/4 W) zwischen Treiber-Ausgang und Stiftleiste J1: kein Wert vorgegeben, der Anwender legt sie passend zu Verbraucher und Lastspannung aus.
 - R1-R8 und LED1-LED8 (3 mm) als Kontroll-LED je Kanal, vom Steuersignal Sn gegen GND. Werte legt der Anwender fest, eine Empfehlung ist auf der Platine aufgedruckt.
 - Keine Pulldowns und keine Widerstaende in den UART-Leitungen. Der ESP32 wird aus +5 V von CN1 (BEC/Empfaenger) versorgt.
 

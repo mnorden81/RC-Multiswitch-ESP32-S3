@@ -1,8 +1,8 @@
 # RC-Multiswitch-ESP32-S3 (v0.4, PCB vom C3 uebertragen)
-Ein Multiswitch nach CRSF Multiswitch THT v1.1 mit Waveshare ESP32-S3-Zero, ULN2803A, 8 Kanaele.
+Ein Multiswitch nach CRSF Multiswitch THT v1.1 mit Waveshare ESP32-S3-Zero, TBD62083APG (NEG) bzw. TBD62783APG (POS), 8 Kanaele.
 
 - Last: 5-12V (VLOAD, JST PH 2 an CN2, max. ca. 2A je Kontakt; TVS P6KE18A), max. 500mA je Kanal.
-- R9-R16 (THT 1/4W) zwischen ULN-Ausgang und Stiftleiste J1: kein Wert vorgegeben, der Anwender legt sie je Verbraucher aus, Leistung beachten.
+- R9-R16 (THT 1/4W) zwischen Treiber-Ausgang und Stiftleiste J1: kein Wert vorgegeben, der Anwender legt sie je Verbraucher aus, Leistung beachten.
 - R1-R8 (Wert vom Anwender, Empfehlung auf der Platine) + LED1-8 (3mm): Kontroll-LED je Kanal, vom Steuersignal Sn gegen GND.
 - Keine Pulldowns, keine Widerstaende in den UART-Leitungen. ESP32 wird aus +5V von CN1 versorgt. Adresse per Firmware/Web-UI/Lua.
 - UART-Buchsen CN1, J5, J6 als JST-GH (SMD-only, Footprint BM04B-GHS-TBT).
@@ -36,12 +36,13 @@ Zuordnung so gewaehlt, dass die vorhandenen Leiterbahnen des C3-Layouts moeglich
 | Weiss | 3,0V | 56R |
 Blau/Weiss: Uf streut stark, bei Bedarf am echten LED nachmessen. Dieselbe Tabelle steht als Hinweis im Schaltplan und ist als Aufdruck auf der Platine.
 
-## Varianten negativ / positiv schaltend (2026-10-30)
-Im Ordner `hardware` liegen neben dem Original zwei eigene KiCad-Projekte:
-- `RC-Multiswitch-ESP32-S3-NEG`: negativ schaltend mit ULN2803A, Platine 1:1 wie das Original. Verbraucher zwischen VLOAD (J1 gerade Pins, "+") und OUTn.
+## Varianten negativ / positiv schaltend (Stand 2026-10-30)
+Im Ordner `hardware` liegen zwei KiCad-Projekte (das fruehere Original-Projekt ist entfernt, es war elektrisch gleich mit NEG):
+- `RC-Multiswitch-ESP32-S3-NEG`: negativ schaltend mit TBD62083APG (DMOS-Senkentreiber, Nachfolger des ULN2803A, gleiche Pinbelegung: Pin 9 GND, Pin 10 COM). Ein ULN2803A passt weiterhin in den Sockel. Verbraucher zwischen VLOAD (J1 gerade Pins, "+") und OUTn.
+  - Spannungsabfall am Ausgang ca. 0,2-0,4 V statt ca. 1 V beim ULN2803A, dadurch deutlich weniger Waerme. Max. 500 mA je Kanal, Summe aller Kanaele max. ca. 1,5 A.
 - `RC-Multiswitch-ESP32-S3-POS`: positiv schaltend mit TBD62783APG (DMOS-Quellentreiber, pinkompatibel zu UDN2981). Verbraucher zwischen OUTn (J1 ungerade Pins, "+") und GND (J1 gerade Pins, "-").
-  - U2 Pin 9 = VCC an VLOAD, Pin 10 = GND (genau umgekehrt wie beim ULN2803A). NICHT mit ULN2803A bestuecken.
+  - U2 Pin 9 = VCC an VLOAD, Pin 10 = GND (genau umgekehrt wie beim TBD62083APG/ULN2803A). NICHT mit ULN2803A oder TBD62083APG bestuecken.
   - Spannungsabfall am Ausgang nur ca. 0,2-0,5 V, daher auch mit VLOAD 5 V brauchbar. Max. 500 mA je Kanal, Summe aller Kanaele max. ca. 1,5 A.
   - Gegenueber NEG geaendert: Netze an U2 Pin 9/10 und an der J1-Schiene, drei Leiterbahnen an U2, Bestueckungsdruck an U2 und J1.
-- Im Original-Schaltplan (v0.4) und in NEG sind UART B/C so beschriftet, wie Platine und Firmware sie belegen (UART B: TX=IO13, RX=IO12; UART C: TX=IO2, RX=IO1).
-- Werte aus dem Datenblatt-Gedaechtnis, vor der Bestellung im TBD62783APG-Datenblatt pruefen. POS noch ohne DRC und ungetestet.
+- In NEG sind UART B/C so beschriftet, wie Platine und Firmware sie belegen (UART B: TX=IO13, RX=IO12; UART C: TX=IO2, RX=IO1).
+- Werte aus dem Datenblatt-Gedaechtnis, vor der Bestellung in den Datenblaettern von TBD62083APG und TBD62783APG pruefen. Noch nicht hardwaregetestet.

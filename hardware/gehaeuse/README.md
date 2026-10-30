@@ -19,13 +19,13 @@
 
 ## Annahmen
 - Der Waveshare ESP32-S3-Zero ist direkt auf einer Stiftleiste eingeloetet (Unterkante 2,5 mm ueber der Platine, bestaetigt). Danach richtet sich der USB-Ausschnitt.
-- Hoechste Teile: J1 (8,5 mm) und der ULN2803A im Sockel (ca. 8 mm). JST-PH-Buchsen liegend, ca. 6 mm hoch.
+- Hoechste Teile: J1 (8,5 mm) und der Treiber (TBD62083APG/TBD62783APG) im Sockel (ca. 8 mm). JST-PH-Buchsen liegend, ca. 6 mm hoch.
 - Lage von BOOT, RESET und RGB-LED auf dem S3-Zero ist nicht in der KiCad-Datei, deshalb ein Fenster ueber dem ganzen Modul.
 
 ## Oeffnungen
 - Links: USB-C des S3-Zero (aussen mit Tasche fuer dicke Stecker), CN1 UART A, CN2 Last 5-12 V.
 - Hinten: J5 UART B und J6 UART C (eine gemeinsame Oeffnung).
-- Deckel: Ausschnitt ueber J1 (Ausgaenge 2x8, Stecker von oben), Fenster ueber dem S3-Zero, 8 Lichtloecher fuer die Kontroll-LEDs, 4 Lueftungsschlitze ueber dem ULN2803A, vertiefte Beschriftung.
+- Deckel: Ausschnitt ueber J1 (Ausgaenge 2x8, Stecker von oben), Fenster ueber dem S3-Zero, 8 Lichtloecher fuer die Kontroll-LEDs, 4 Lueftungsschlitze ueber dem Treiber U2, vertiefte Beschriftung.
 
 ## Drucken und Montieren
 - PETG oder PLA, 0,2 mm Schicht, 3 Wandlinien, 20 % Fuellung, keine Stuetzen noetig.
