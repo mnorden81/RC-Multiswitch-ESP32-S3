@@ -4,6 +4,8 @@
 # Koordinaten: X = KiCad-x - 123.8, Y = 88.4 - KiCad-y (Platinen-Ecke links vorne = 0/0),
 # Z nach oben, Z = 0 = Unterseite Gehaeuseboden.
 # Waende: links = CN1/CN2/USB, hinten = J5/J6 (KiCad-Oberkante), J1 wird von oben gesteckt.
+# Variante "gewinkelt" (python gehaeuse.py --gewinkelt): J1 = gewinkelte Stiftleiste 2x8, Koerper zur
+# rechten Kante, Stecker seitlich durch einen Schlitz in der rechten Wand, Deckel ueber J1 geschlossen.
 import os, sys
 import cadquery as cq
 
@@ -24,6 +26,8 @@ BOSS_R    = 2.8
 LIPPE     = 3.0      # Hoehe der Zentrierlippe am Deckel
 TOL       = 0.25     # Spiel Lippe <-> Innenwand
 NIEDER    = 0.1      # Niederhalter am Deckel enden so viel ueber der Platine (0 = liegt auf)
+J1_GEWINKELT = "--gewinkelt" in sys.argv   # True = gewinkelte Stiftleiste 2x8 fuer die Ausgaenge
+J1_SCHLITZ_H = 6.0   # Hoehe Wandschlitz fuer die Stecker ueber Platinen-Oberkante (Leiste 5,1 mm)
 
 Z_PCB = BODEN + UNTEN            # Unterkante Platine
 Z_TOP = Z_PCB + PCB_T            # Oberkante Platine
@@ -61,6 +65,9 @@ LED_KICAD = [(148.66, 42.7), (153.86, 42.7), (159.06, 42.7), (164.23, 42.7),
              (169.36, 42.7), (174.46, 42.7), (179.5, 42.7), (184.5, 42.7)]
 LED_OFF = 1.27   # LED_D3.0mm: Mitte liegt 1,27 mm rechts von Pad 1
 J1 = (182.05, 60.42, 188.14, 81.74)  # Courtyard Stiftleiste 2x8
+J1_PIN = (183.82, 62.19)             # Pad 1; 2. Reihe bei x + 2,54, Pins bis y + 17,78
+# Gewinkelte Leiste (KiCad PinHeader_2x08_P2.54mm_Horizontal): Kunststoff 4,04-6,58 mm ab Pad-1-Reihe,
+# Pins enden 12,58 mm ab Pad-1-Reihe, Koerper 0-5,08 mm ueber der Platine.
 
 # ---------------- Oeffnungen in den Waenden ----------------
 # (Name, Wand, von, bis (entlang der Wand), z_unten, z_oben ueber Platinen-Oberkante)
@@ -71,6 +78,9 @@ OEFFNUNGEN = [
     ("USB-C ESP",   "L", *kicad_span_y(USB_Y - 6.0, USB_Y + 6.0), USB_Z - 3.8, USB_Z + 3.8),
     ("J5+J6 UART B/C", "O", kx(125.35 - 0.8), kx(146.55 + 0.8), -0.2, 6.8),
 ]
+if J1_GEWINKELT:   # 8 Stecker 2-polig nebeneinander (je 2,54 mm), 0,6 mm Luft je Seite
+    OEFFNUNGEN.append(("J1 Ausgaenge", "R", *kicad_span_y(J1_PIN[1] - 1.27 - 0.6, J1_PIN[1] + 17.78 + 1.27 + 0.6),
+                       -0.2, J1_SCHLITZ_H))
 
 def wand_schnitt(w, a, b, z0, z1, tiefe=1.0):
     za, zb = Z_TOP + z0, Z_TOP + z1
@@ -85,6 +95,8 @@ NIEDERHALTER = [("O", kx(152.0)), ("O", kx(168.0)), ("O", kx(186.0)),
                 ("U", kx(140.0)), ("U", kx(165.0)), ("U", kx(185.0)),
                 ("R", ky(50.0)), ("R", ky(75.0)),
                 ("L", ky(60.5)), ("L", ky(78.3))]
+if J1_GEWINKELT:   # Rippe rechts bei y 75 saesse auf dem Leistenkoerper
+    NIEDERHALTER.remove(("R", ky(75.0)))
 
 def unterteil():
     b = rbox(OX0, OY0, 0, OX1, OY1, H_BASE, ECKE_R)
@@ -141,8 +153,9 @@ def deckel():
         d = d.cut(cyl(kx(x + LED_OFF), ky(y), -1, DECKEL + 1, 1.7))
     # Fenster ueber dem S3-Zero: BOOT/RESET mit Stift druecken, RGB-LED sichtbar
     d = d.cut(rbox(kx(ESP[0] - 0.5), ky(ESP[3] + 0.5), -1, kx(ESP[2] + 0.5), ky(ESP[1] - 0.5), DECKEL + 1, 1.5))
-    # Ausschnitt ueber J1 (Ausgaenge, Stiftleiste 2x8, Stecker von oben)
-    d = d.cut(rbox(kx(J1[0] - 0.4), ky(J1[3] + 0.4), -1, kx(J1[2] + 0.4), ky(J1[1] - 0.4), DECKEL + 1, 1.0))
+    # Ausschnitt ueber J1 (Ausgaenge, Stiftleiste 2x8, Stecker von oben); gewinkelt: Deckel bleibt zu
+    if not J1_GEWINKELT:
+        d = d.cut(rbox(kx(J1[0] - 0.4), ky(J1[3] + 0.4), -1, kx(J1[2] + 0.4), ky(J1[1] - 0.4), DECKEL + 1, 1.0))
     # Lueftungsschlitze ueber dem Treiber U2
     for i in range(4):
         x = kx(156.3) + i * 2.6
@@ -171,7 +184,9 @@ def platine_dummy():
         "ESP": fab(*ESP, ESP_Z, ESP_Z + ESP_T),
         "USB": fab(126.6, USB_Y - 4.5, 134.0, USB_Y + 4.5, ESP_Z + ESP_T, ESP_Z + ESP_T + 3.2),
         "U2": fab(155.23, 60.0, 165.39, 82.98, 0, 8.0),
-        "J1": fab(182.55, 60.92, 187.63, 81.24, 0, 8.5),
+        "J1": fab(182.55, 60.92, 187.63, 81.24, 0, 8.5) if not J1_GEWINKELT else
+              fab(J1_PIN[0] + 4.04, J1_PIN[1] - 1.27, J1_PIN[0] + 6.58, J1_PIN[1] + 19.05, 0, 5.08)
+              .union(fab(J1_PIN[0] + 6.58, J1_PIN[1] - 0.32, J1_PIN[0] + 12.58, J1_PIN[1] + 18.1, 0.95, 4.13)),
         "D1": fab(138.0, 82.67, 147.0, 86.27, 0, 3.6),
         "CN1": fab(125.45, 48.25, 133.05, 58.15, 0, 6.0),
         "CN2": fab(124.05, 81.23, 131.65, 87.13, 0, 6.0),
@@ -185,16 +200,18 @@ def platine_dummy():
     return p
 
 if __name__ == "__main__":
-    out = sys.argv[1] if len(sys.argv) > 1 else "export"
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    out = args[0] if args else "export"
     os.makedirs(out, exist_ok=True)
+    SUFFIX = "_gewinkelt" if J1_GEWINKELT else ""
     u, d = unterteil(), deckel()
     print("Aussenmasse: %.1f x %.1f x %.1f mm (mit Deckel)" % (OX1 - OX0, OY1 - OY0, H_BASE + DECKEL))
-    cq.exporters.export(u, f"{out}/Gehaeuse_Unterteil.stl", tolerance=0.05, angularTolerance=0.1)
-    cq.exporters.export(u, f"{out}/Gehaeuse_Unterteil.step")
+    cq.exporters.export(u, f"{out}/Gehaeuse_Unterteil{SUFFIX}.stl", tolerance=0.05, angularTolerance=0.1)
+    cq.exporters.export(u, f"{out}/Gehaeuse_Unterteil{SUFFIX}.step")
     # Deckel fuer den Druck umdrehen (Oberseite aufs Bett)
     d_druck = d.rotate((0, 0, 0), (1, 0, 0), 180)
-    cq.exporters.export(d_druck, f"{out}/Gehaeuse_Deckel.stl", tolerance=0.05, angularTolerance=0.1)
-    cq.exporters.export(d, f"{out}/Gehaeuse_Deckel.step")
+    cq.exporters.export(d_druck, f"{out}/Gehaeuse_Deckel{SUFFIX}.stl", tolerance=0.05, angularTolerance=0.1)
+    cq.exporters.export(d, f"{out}/Gehaeuse_Deckel{SUFFIX}.step")
     if "--pruefen" in sys.argv:
         pd = platine_dummy()
         cu = pd.intersect(u).val().Volume()

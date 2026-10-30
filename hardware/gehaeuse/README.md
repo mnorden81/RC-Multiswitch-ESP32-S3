@@ -34,6 +34,25 @@
 - Einbau ins Modell: 4 Laschen am Boden mit 3,4-mm-Loch fuer Schrauben oder Kabelbinder.
 - Noch nicht gedruckt und nicht am echten Aufbau geprueft.
 
+## Version mit gewinkelter Stiftleiste (J1 seitlich)
+Fuer eine gewinkelte Stiftleiste 2x8, 2,54 mm an J1 statt der stehenden. Die Stecker der 8 Ausgaenge kommen seitlich durch die rechte Wand, der Deckel ist ueber J1 geschlossen.
+
+![Gehaeuse gewinkelt, rechte Seite](gehaeuse_gewinkelt_rechts.png)
+
+| Datei | Inhalt |
+|---|---|
+| `Gehaeuse_Unterteil_gewinkelt.stl` / `.step` | Unterteil mit Schlitz 21,5 x 6,2 mm in der rechten Wand |
+| `Gehaeuse_Deckel_gewinkelt.stl` / `.step` | Deckel ohne J1-Ausschnitt, 9 statt 10 Niederhalter-Rippen |
+| `Gehaeuse3D_Vorschau_gewinkelt.html` | 3D-Vorschau dieser Version |
+
+- Die Leiste wird in die vorhandenen Loecher von J1 geloetet, der Kunststoffkoerper zeigt zur rechten Platinenkante. Die Platine bleibt unveraendert (gilt fuer NEG und POS).
+- Masse nach KiCad-Footprint `PinHeader_2x08_P2.54mm_Horizontal`: Koerper 5,1 mm hoch, steht ca. 0,1 mm ueber die Platinenkante, die Pins ragen ca. 3,4 mm aus der Aussenwand.
+- Oben liegen die Ausgaenge (ungerade Pins), unten die gemeinsame Reihe (gerade Pins: NEG = VLOAD, POS = GND).
+- Der Schlitz passt fuer 8 Dupont-Stecker 2-polig nebeneinander (je 2,54 x 5,08 mm).
+- Aussenmasse und Innenhoehe wie bei der stehenden Version. Hoechstes Teil ist jetzt der Treiber U2 im Sockel.
+- Platine zuerst einlegen, dann die Stecker aufstecken.
+- Erzeugen: `python gehaeuse.py export --gewinkelt`
+
 ## Aendern
 Masse in `gehaeuse.py` anpassen und neu erzeugen (Python 3 mit `pip install cadquery`):
 ```
