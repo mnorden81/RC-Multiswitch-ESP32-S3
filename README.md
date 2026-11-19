@@ -46,8 +46,8 @@ Board: Waveshare ESP32-S3-Zero
 - Empfehlung LED-Vorwiderstaende R1-R8 bei 3,3 V (ca. 5 mA, auch auf der Platine aufgedruckt): Rot/Gelb 270 R, Gruen 220 R, Blau/Weiss 56 R.
 - Footprint ESP32-S3-Zero_THT: 2x9, 2,54 mm, Reihenabstand 15,24 mm. Vor dem Layout 1:1 am echten Board pruefen.
 
-## Firmware (v4.11)
-- Arduino-Sketch `firmware/RC_Multiswitch`, gleicher Quellcode fuer C3 und S3 (Board wird automatisch erkannt). Basis: MultiSwitch_ESP32_V3 v3.12.
+## Firmware (v5.00)
+- Arduino-Sketch `firmware/RC_Multiswitch`, gleicher Quellcode fuer C3, S3 und den klassischen ESP32 (Platinen Basis/TXRX aus ESP32-Multiswitch-Basis_Ziege-One). Der Chip wird automatisch erkannt, Basis oder TXRX waehlt man in der Web-UI (Karte „Platine“) oder im Lua. Basis: MultiSwitch_ESP32_V3 v3.12.
 - CRSF auf UART A (Werkseinstellung ab v4.07), wahlweise SBUS. UART B und UART C per Lua oder Web-UI auf Aus, CRSF (Modulkette), S.Port, GPS oder Raw einstellbar, mit eigener Baudrate je UART. Beim GPS sucht die Baudrate „Auto“ (Vorgabe) die Rate selbst und stellt das GPS auf 115200 Baud und 10 Hz um, wie bei Betaflight. In der Modulkette ist jedes Modul mit eigener Adresse ueber Lua einzeln einstellbar. Lua-Menü ab v4.09: Ordner zeigen ihren Wert (z. B. „Ausgang 1 (Kanal_L 5)“), Felder ohne Wirkung werden ausgeblendet.
 - Gemeinsame Basis aller ESP32-Module seit v4.05: `firmware/RC_Multiswitch/src/RC_Common/` (siehe deren README).
 - BOOT-Taster 2 s halten: WLAN-AP ein/aus. Status-LED nur beim S3, ab v4.10 mit denselben Farben wie alle Module (grün langsam = OK, rot schnell = Failsafe, rot Aufblitzen = kein Signal, blau Doppelblitz = Adresskonflikt, violett = WLAN an).
@@ -63,7 +63,7 @@ Es gibt drei Wege. Ein neues Modul wird einmal per USB geflasht (Weg 1 oder Weg 
 | 2. Arduino IDE | Arduino IDE 2.x | bleiben erhalten |
 | 3. Update per WLAN | Handy oder PC mit WLAN | bleiben erhalten |
 
-Der Sketch ist für C3 und S3 derselbe, das Board wird automatisch erkannt. Für dieses Repo (Waveshare ESP32-S3-Zero) gilt das Artefakt `RC_Multiswitch-S3` und die Einstellungen unten.
+Der Sketch ist für C3, S3 und ESP32 (Basis/TXRX) derselbe, das Board wird automatisch erkannt. Für dieses Repo (Waveshare ESP32-S3-Zero) gilt das Artefakt `RC_Multiswitch-S3` und die Einstellungen unten.
 
 ### Weg 1: Fertige Firmware aus GitHub (ohne Arduino IDE)
 
@@ -124,12 +124,12 @@ Schlägt das Update fehl, läuft die alte Firmware einfach weiter. Das Modul bei
 
 ## Ordner
 - `hardware/`: KiCad-Projekt (Schaltplan, PCB, PDF, eigene Footprints, fp-lib-table). Entwurfsnotizen in [hardware/README-hardware.md](hardware/README-hardware.md). 3D-druckbares Gehaeuse in [hardware/gehaeuse/](hardware/gehaeuse/README.md).
-- `firmware/`: Firmware v4.11 (Arduino-Sketch).
+- `firmware/`: Firmware v5.00 (Arduino-Sketch).
 - `docs/`: Projektbeschreibung, Hardware-Beschreibung und Firmware-Spezifikation.
 
 ## Stand
 - Hardware: Schaltplan fertig, PCB vom C3 uebernommen und an U1 neu verlegt. DRC in KiCad steht noch aus, J6 nur vorlaeufig platziert.
-- Firmware: v4.11 kompiliert fuer C3 und S3, noch nicht auf Hardware getestet.
+- Firmware: v5.00 kompiliert fuer C3, S3 und ESP32 (Basis/TXRX), noch nicht auf Hardware getestet.
 
 ## Offene Punkte
 - DRC in KiCad ausfuehren (an U1 sind laut PCB-Datei alle Anschluesse verlegt)
