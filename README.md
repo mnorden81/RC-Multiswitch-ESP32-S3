@@ -46,10 +46,10 @@ Board: Waveshare ESP32-S3-Zero
 - Empfehlung LED-Vorwiderstaende R1-R8 bei 3,3 V (ca. 5 mA, auch auf der Platine aufgedruckt): Rot/Gelb 270 R, Gruen 220 R, Blau/Weiss 56 R.
 - Footprint ESP32-S3-Zero_THT: 2x9, 2,54 mm, Reihenabstand 15,24 mm. Vor dem Layout 1:1 am echten Board pruefen.
 
-## Firmware (v5.01)
+## Firmware (v5.04)
 - Arduino-Sketch `firmware/RC_Multiswitch`, gleicher Quellcode fuer C3, S3 und den klassischen ESP32 (Platinen Basis/TXRX aus ESP32-Multiswitch-Basis_Ziege-One). Der Chip wird automatisch erkannt, Basis oder TXRX waehlt man in der Web-UI (Karte „Platine“) oder im Lua. Basis: MultiSwitch_ESP32_V3 v3.12.
 - CRSF auf UART A (Werkseinstellung ab v4.07), wahlweise SBUS. UART B und UART C per Lua oder Web-UI auf Aus, CRSF (Modulkette), S.Port, GPS oder Raw einstellbar, mit eigener Baudrate je UART. Beim GPS sucht die Baudrate „Auto“ (Vorgabe) die Rate selbst und stellt das GPS auf 115200 Baud und 10 Hz um, wie bei Betaflight. In der Modulkette ist jedes Modul mit eigener Adresse ueber Lua einzeln einstellbar. Lua-Menü ab v4.09: Ordner zeigen ihren Wert (z. B. „Ausgang 1 (Kanal_L 5)“), Felder ohne Wirkung werden ausgeblendet.
-- Funk ab v5.01 (ESP-NOW): RC-System „CRSF + Funk senden (Zentrale)“ am Modul, das am Empfänger hängt, und „CRSF aus Funk (Teilnehmer)“ an Modulen ohne Kabel zum Empfänger. Kanäle, Lua-Menü und Telemetrie laufen über Funk. Fahrzeug-Kennung und Funkkanal müssen überall gleich sein. Die Funk-Brücke (RC-CRSF-Router-ESP32-S3, `pruefstand/Funk_Bruecke`) passt an jede Seite. Reiter „Funk“ in der Web-UI zeigt die Verbindungsqualität.
+- Funk ab v5.01 (ESP-NOW): RC-System „CRSF + Funk senden (Zentrale)“ am Modul, das am Empfänger hängt, und „CRSF aus Funk (Teilnehmer)“ an Modulen ohne Kabel zum Empfänger. Kanäle, Lua-Menü und Telemetrie laufen über Funk. Fahrzeug-Kennung und Funkkanal müssen überall gleich sein. Die Funk-Brücke (eigenes Repo ESP32_ESP-NOW_CRSF-Link) passt an jede Seite. Reiter „Funk“ in der Web-UI zeigt die Verbindungsqualität.
 - Gemeinsame Basis aller ESP32-Module seit v4.05: `firmware/RC_Multiswitch/src/RC_Common/` (siehe deren README).
 - BOOT-Taster 2 s halten: WLAN-AP ein/aus. Status-LED nur beim S3, ab v4.10 mit denselben Farben wie alle Module (grün langsam = OK, rot schnell = Failsafe, rot Aufblitzen = kein Signal, blau Doppelblitz = Adresskonflikt, violett = WLAN an).
 - Details und Bauanleitung: [firmware/README.md](firmware/README.md). Alle Versionen: [CHANGELOG.md](CHANGELOG.md).
@@ -125,12 +125,12 @@ Schlägt das Update fehl, läuft die alte Firmware einfach weiter. Das Modul bei
 
 ## Ordner
 - `hardware/`: KiCad-Projekt (Schaltplan, PCB, PDF, eigene Footprints, fp-lib-table). Entwurfsnotizen in [hardware/README-hardware.md](hardware/README-hardware.md). 3D-druckbares Gehaeuse in [hardware/gehaeuse/](hardware/gehaeuse/README.md).
-- `firmware/`: Firmware v5.01 (Arduino-Sketch).
+- `firmware/`: Firmware v5.04 (Arduino-Sketch).
 - `docs/`: Projektbeschreibung, Hardware-Beschreibung und Firmware-Spezifikation.
 
 ## Stand
 - Hardware: Schaltplan fertig, PCB vom C3 uebernommen und an U1 neu verlegt. DRC in KiCad steht noch aus, J6 nur vorlaeufig platziert.
-- Firmware: v5.01 (Funk) kompiliert fuer C3, S3 und ESP32 (Basis/TXRX), noch nicht auf Hardware getestet.
+- Firmware: v5.04 kompiliert fuer C3, S3 und ESP32 (Basis/TXRX). Funk-Teilnehmer (S3) auf Hardware: Kanaele, WM und Lua laufen.
 
 ## Offene Punkte
 - DRC in KiCad ausfuehren (an U1 sind laut PCB-Datei alle Anschluesse verlegt)
