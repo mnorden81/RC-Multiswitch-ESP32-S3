@@ -137,3 +137,7 @@ Schlägt das Update fehl, läuft die alte Firmware einfach weiter. Das Modul bei
 - Platzierung von J6 (UART C) festlegen
 - Footprint am echten Board pruefen
 - Firmware auf Hardware testen (Einzelmodul und Kette mit 2-3 Modulen)
+
+## Prüfstand (WebUI und Lua im Browser)
+
+In [`pruefstand/`](pruefstand/) liegt eine Seite, die die echte Weboberfläche und das Lua-Menü dieser Firmware im Browser zeigt (alle Varianten, Modul simuliert): [Prüfstand öffnen](https://raw.githack.com/mnorden81/RC-Multiswitch-ESP32-S3/main/pruefstand/pruefstand.html). Sie wird bei jeder Firmware-Änderung neu gebaut, die GitHub-Prüfung „Prüfstand" achtet darauf.
